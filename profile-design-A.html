@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方案A — 深夜霓虹</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --border: #1e1e2e;
+  --neon-pink: #ff2d78;
+  --neon-cyan: #00e5ff;
+  --neon-purple: #b44dff;
+  --text: #e8e8f0;
+  --muted: #6b6b8a;
+  --card: #16161f;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+}
+
+/* Cover */
+.cover {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0d0d1a 0%, #1a0a2e 40%, #0a1a2e 100%);
+}
+.cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 20% 50%, rgba(180,77,255,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 80% 30%, rgba(0,229,255,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 60% 80%, rgba(255,45,120,0.2) 0%, transparent 60%);
+}
+.cover-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.cover-scan {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.15) 2px,
+    rgba(0,0,0,0.15) 4px
+  );
+}
+
+/* Avatar area */
+.profile-header {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+}
+.avatar-wrap {
+  position: relative;
+  display: inline-block;
+  margin-top: -52px;
+}
+.avatar {
+  width: 104px; height: 104px;
+  border-radius: 50%;
+  border: 3px solid var(--bg);
+  background: linear-gradient(135deg, #b44dff, #00e5ff);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 36px;
+  color: #fff;
+  position: relative;
+  z-index: 2;
+}
+.avatar::after {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff2d78, #b44dff, #00e5ff, #ff2d78);
+  z-index: -1;
+  animation: spin 4s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.online-dot {
+  position: absolute; bottom: 6px; right: 6px;
+  width: 14px; height: 14px;
+  background: #00ff88;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 8px #00ff88;
+  z-index: 3;
+}
+
+.edit-btn {
+  position: absolute; right: 0; top: 16px;
+  padding: 8px 18px;
+  border: 1px solid var(--neon-cyan);
+  background: transparent;
+  color: var(--neon-cyan);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+}
+.edit-btn:hover {
+  background: var(--neon-cyan);
+  color: var(--bg);
+}
+
+.profile-info { padding: 14px 0 0; }
+.display-name {
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.username {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: var(--neon-pink);
+  margin-top: 2px;
+}
+.username::before { content: '@'; }
+
+.bio {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #a0a0c0;
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.meta {
+  display: flex; gap: 16px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  flex-wrap: wrap;
+}
+.meta span { display: flex; align-items: center; gap: 5px; }
+.meta-icon { font-size: 11px; }
+
+.stats {
+  display: flex; gap: 24px;
+  margin-top: 14px;
+  font-size: 14px;
+}
+.stat strong {
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+  color: var(--text);
+}
+.stat span { color: var(--muted); font-size: 13px; margin-left: 4px; }
+
+/* Tabs */
+.tabs {
+  max-width: 680px; margin: 24px auto 0;
+  padding: 0 20px;
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-family: 'Space Mono', monospace;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.tab.active {
+  color: var(--neon-cyan);
+  border-bottom-color: var(--neon-cyan);
+}
+.tab:hover:not(.active) { color: var(--text); }
+
+/* Feed */
+.feed {
+  max-width: 680px; margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+.post {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 0;
+  animation: fadeUp 0.4s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.post:nth-child(1) { animation-delay: 0.05s; }
+.post:nth-child(2) { animation-delay: 0.1s; }
+.post:nth-child(3) { animation-delay: 0.15s; }
+
+.post-header { display: flex; gap: 10px; align-items: center; }
+.post-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, #b44dff, #00e5ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.post-meta { flex: 1; }
+.post-name { font-size: 14px; font-weight: 500; }
+.post-time { font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace; }
+.post-body { margin-top: 10px; font-size: 14px; line-height: 1.65; color: #c8c8e0; }
+.post-body .tag { color: var(--neon-cyan); }
+.post-actions {
+  display: flex; gap: 20px; margin-top: 12px;
+}
+.action {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 13px; color: var(--muted);
+  cursor: pointer; transition: color 0.2s;
+  font-family: 'Space Mono', monospace;
+}
+.action:hover { color: var(--neon-pink); }
+.action.liked { color: var(--neon-pink); }
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* Label */
+.design-label {
+  position: fixed; top: 12px; left: 12px;
+  background: rgba(0,229,255,0.15);
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  letter-spacing: 1px;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+</style>
+</head>
+<body>
+<div class="design-label">方案 A · 深夜霓虹</div>
+
+<div class="cover">
+  <div class="cover-grid"></div>
+  <div class="cover-scan"></div>
+</div>
+
+<div class="profile-header">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div class="avatar-wrap">
+      <div class="avatar">夜</div>
+      <div class="online-dot"></div>
+    </div>
+    <button class="edit-btn">编辑资料</button>
+  </div>
+  <div class="profile-info">
+    <div class="display-name">夜行者_Nyx</div>
+    <div class="username">nyx_walker</div>
+    <div class="bio">数字游民 · 代码诗人 · 在赛博空间寻找真实的温度 ✦ 深夜写代码，白天做梦</div>
+    <div class="meta">
+      <span><span class="meta-icon">◈</span> 赛博城市</span>
+      <span><span class="meta-icon">◈</span> nyx.dev</span>
+      <span><span class="meta-icon">◈</span> 2023年3月加入</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><strong>312</strong><span>关注</span></div>
+      <div class="stat"><strong>8.4K</strong><span>粉丝</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active">帖子</div>
+  <div class="tab">回复</div>
+  <div class="tab">点赞</div>
+</div>
+
+<div class="feed">
+  <div class="post">
+    <div class="post-header">
+      <div class="post-avatar">夜</div>
+      <div class="post-meta">
+        <div class="post-name">夜行者_Nyx</div>
+        <div class="post-time">2h · @nyx_walker</div>
+      </div>
+    </div>
+    <div class="post-body">
+      凌晨3点，终于把那个困扰了我一周的 bug 修好了。<br>
+      原来是个 <span class="tag">#异步竞态</span> 问题，藏得很深。<br>
+      有时候代码就像迷宫，你以为找到了出口，其实只是换了一个房间。
+    </div>
+    <div class="post-actions">
+      <div class="action">↩ 24</div>
+      <div class="action">⟳ 18</div>
+      <div class="action liked">♥ 312</div>
+      <div class="action">↗</div>
+    </div>
+  </div>
+  <div class="post">
+    <div class="post-header">
+      <div class="post-avatar">夜</div>
+      <div class="post-meta">
+        <div class="post-name">夜行者_Nyx</div>
+        <div class="post-time">1d · @nyx_walker</div>
+      </div>
+    </div>
+    <div class="post-body">
+      分享一个 <span class="tag">#WebGL</span> 粒子系统的实现思路——<br>
+      用噪声函数驱动粒子运动，每一帧都是独一无二的宇宙。<br>
+      代码即诗，运行即艺术。
+    </div>
+    <div class="post-actions">
+      <div class="action">↩ 56</div>
+      <div class="action">⟳ 203</div>
+      <div class="action">♥ 1.2K</div>
+      <div class="action">↗</div>
+    </div>
+  </div>
+  <div class="post">
+    <div class="post-header">
+      <div class="post-avatar">夜</div>
+      <div class="post-meta">
+        <div class="post-name">夜行者_Nyx</div>
+        <div class="post-time">3d · @nyx_walker</div>
+      </div>
+    </div>
+    <div class="post-body">
+      问一个问题：你们觉得 <span class="tag">#AI</span> 会取代程序员吗？<br>
+      我的答案是：会取代那些只会复制粘贴的，但永远无法取代真正在思考的人。
+    </div>
+    <div class="post-actions">
+      <div class="action">↩ 189</div>
+      <div class="action">⟳ 445</div>
+      <div class="action">♥ 3.8K</div>
+      <div class="action">↗</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

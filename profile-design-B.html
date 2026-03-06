@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方案B — 奶油纸质</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f0e8;
+  --paper: #faf7f2;
+  --warm-white: #fffef9;
+  --ink: #1a1612;
+  --ink-light: #4a4540;
+  --ink-muted: #9a9088;
+  --rust: #c4522a;
+  --sage: #5a7a5e;
+  --gold: #b8922a;
+  --border: #e0d8cc;
+  --shadow: rgba(26,22,18,0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Noto Serif SC', serif;
+  min-height: 100vh;
+}
+
+/* Texture overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.6;
+}
+
+/* Cover */
+.cover {
+  height: 200px;
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+.cover-pattern {
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(184,146,42,0.08) 20px,
+      rgba(184,146,42,0.08) 21px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 20px,
+      rgba(184,146,42,0.08) 20px,
+      rgba(184,146,42,0.08) 21px
+    );
+}
+.cover-text {
+  position: absolute;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(245,240,232,0.3);
+  letter-spacing: 4px;
+  white-space: nowrap;
+}
+
+/* Main container */
+.container {
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Profile header */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: -44px;
+  position: relative;
+}
+
+.avatar {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  border: 4px solid var(--paper);
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  color: var(--gold);
+  box-shadow: 0 4px 20px var(--shadow);
+  position: relative;
+  z-index: 2;
+}
+
+.edit-btn {
+  margin-top: 56px;
+  padding: 8px 20px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 1.5px;
+  transition: all 0.25s;
+  border-radius: 2px;
+}
+.edit-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.profile-info { padding: 16px 0 0; }
+
+.display-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.username {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--rust);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+.bio {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ink-light);
+  font-style: italic;
+  border-left: 2px solid var(--gold);
+  padding-left: 14px;
+  max-width: 460px;
+}
+
+.meta {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  margin-top: 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.meta-item { display: flex; align-items: center; gap: 5px; }
+.meta-dot {
+  width: 4px; height: 4px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 16px 0;
+}
+
+.stats {
+  display: flex; gap: 32px;
+}
+.stat { text-align: center; }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1.5px solid var(--border);
+  margin-top: 24px;
+  gap: 0;
+}
+.tab {
+  padding: 10px 22px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1.5px;
+  transition: all 0.2s;
+}
+.tab.active {
+  color: var(--rust);
+  border-bottom-color: var(--rust);
+}
+.tab:hover:not(.active) { color: var(--ink); }
+
+/* Feed */
+.feed { padding-bottom: 48px; }
+
+.post {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+  animation: fadeIn 0.5s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.post:nth-child(1) { animation-delay: 0.05s; }
+.post:nth-child(2) { animation-delay: 0.12s; }
+.post:nth-child(3) { animation-delay: 0.19s; }
+
+.post-header { display: flex; gap: 12px; align-items: center; }
+.post-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.post-name { font-size: 14px; font-weight: 600; }
+.post-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.post-body {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ink-light);
+}
+.post-body .tag { color: var(--sage); font-style: italic; }
+
+.post-actions {
+  display: flex; gap: 24px; margin-top: 14px;
+}
+.action {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: color 0.2s;
+  letter-spacing: 0.5px;
+}
+.action:hover { color: var(--rust); }
+.action.liked { color: var(--rust); }
+
+/* Label */
+.design-label {
+  position: fixed; top: 12px; left: 12px;
+  background: var(--ink);
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 5px 12px;
+  letter-spacing: 2px;
+  border-radius: 2px;
+}
+</style>
+</head>
+<body>
+<div class="design-label">方案 B · 奶油纸质</div>
+
+<div class="cover">
+  <div class="cover-pattern"></div>
+  <div class="cover-text">— 文字是思想的容器 —</div>
+</div>
+
+<div class="container">
+  <div class="profile-header">
+    <div class="avatar">林</div>
+    <button class="edit-btn">编辑资料</button>
+  </div>
+
+  <div class="profile-info">
+    <div class="display-name">林晚舟</div>
+    <div class="username">@lin_wanzhou</div>
+    <div class="bio">写字的人。相信文字有重量，有温度，有时候也有锋芒。在这里记录所见所想，不求共鸣，但求真实。</div>
+    <div class="meta">
+      <div class="meta-item"><div class="meta-dot"></div>上海</div>
+      <div class="meta-item"><div class="meta-dot"></div>linwanzhou.com</div>
+      <div class="meta-item"><div class="meta-dot"></div>2022年9月加入</div>
+    </div>
+    <div class="divider"></div>
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num">248</span>
+        <span class="stat-label">关注</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">12.6K</span>
+        <span class="stat-label">粉丝</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active">帖子</div>
+    <div class="tab">回复</div>
+    <div class="tab">点赞</div>
+  </div>
+
+  <div class="feed">
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">林</div>
+        <div>
+          <div class="post-name">林晚舟</div>
+          <div class="post-time">3小时前</div>
+        </div>
+      </div>
+      <div class="post-body">
+        读完了《百年孤独》第三遍。每次读都像第一次，又像最后一次。<br>
+        马尔克斯说，人生中真正重要的事情不是你经历了什么，而是你记住了什么，以及你用什么方式记住它。<br>
+        <span class="tag">#阅读 #文学</span>
+      </div>
+      <div class="post-actions">
+        <div class="action">回复 · 31</div>
+        <div class="action">转发 · 67</div>
+        <div class="action liked">喜欢 · 892</div>
+      </div>
+    </div>
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">林</div>
+        <div>
+          <div class="post-name">林晚舟</div>
+          <div class="post-time">昨天</div>
+        </div>
+      </div>
+      <div class="post-body">
+        今天在咖啡馆写了四个小时，写了三百字，删了两百八十字。<br>
+        剩下的二十字，是今天最诚实的自己。<br>
+        <span class="tag">#写作日常</span>
+      </div>
+      <div class="post-actions">
+        <div class="action">回复 · 88</div>
+        <div class="action">转发 · 234</div>
+        <div class="action">喜欢 · 2.1K</div>
+      </div>
+    </div>
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar">林</div>
+        <div>
+          <div class="post-name">林晚舟</div>
+          <div class="post-time">3天前</div>
+        </div>
+      </div>
+      <div class="post-body">
+        有人问我为什么坚持写作。<br>
+        因为有些话，说出来会消散，只有写下来，才能留住。<br>
+        <span class="tag">#随想</span>
+      </div>
+      <div class="post-actions">
+        <div class="action">回复 · 156</div>
+        <div class="action">转发 · 512</div>
+        <div class="action">喜欢 · 5.4K</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
