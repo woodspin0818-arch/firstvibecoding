@@ -3,43 +3,46 @@ import { supabase } from '../lib/supabase';
 import './AuthPage.css';
 
 export default function AuthPage() {
-  const [mode, setMode] = useState('login'); // login | register
-  const [email, setEmail] = useState('');
+  const [mode, setMode] = useState('login');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [done, setDone] = useState(false);
+
+  const fakeEmail = (u) => `${u.toLowerCase()}@firstvibecoding.app`;
 
   const submit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+      setError('用户名只能包含字母、数字、下划线，3-20位');
+      return;
+    }
     setLoading(true);
     try {
       if (mode === 'register') {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({
+          email: fakeEmail(username),
+          password,
+          options: { data: { username } },
+        });
         if (error) throw error;
-        setDone(true);
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({
+          email: fakeEmail(username),
+          password,
+        });
         if (error) throw error;
       }
     } catch (err) {
-      setError(err.message);
+      const msg = err.message;
+      if (msg.includes('already registered')) setError('该用户名已被注册');
+      else if (msg.includes('Invalid login')) setError('用户名或密码错误');
+      else setError(msg);
     } finally {
       setLoading(false);
     }
   };
-
-  if (done) return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <div className="auth-logo">✦</div>
-        <h2>验证邮箱</h2>
-        <p className="auth-hint">注册成功！请查收邮件并点击验证链接后登录。</p>
-        <button className="auth-btn" onClick={() => { setMode('login'); setDone(false); }}>去登录</button>
-      </div>
-    </div>
-  );
 
   return (
     <div className="auth-page">
@@ -49,8 +52,8 @@ export default function AuthPage() {
         <form onSubmit={submit}>
           <input
             className="auth-input"
-            type="email" placeholder="邮箱"
-            value={email} onChange={(e) => setEmail(e.target.value)}
+            type="text" placeholder="用户名（字母/数字/下划线）"
+            value={username} onChange={(e) => setUsername(e.target.value)}
             required autoFocus
           />
           <input
@@ -65,11 +68,10 @@ export default function AuthPage() {
           </button>
         </form>
         <div className="auth-switch">
-          {mode === 'login' ? (
-            <>还没有账号？<span onClick={() => { setMode('register'); setError(''); }}>注册</span></>
-          ) : (
-            <>已有账号？<span onClick={() => { setMode('login'); setError(''); }}>登录</span></>
-          )}
+          {mode === 'login'
+            ? <>还没有账号？<span onClick={() => { setMode('register'); setError(''); }}>注册</span></>
+            : <>已有账号？<span onClick={() => { setMode('login'); setError(''); }}>登录</span></>
+          }
         </div>
       </div>
     </div>
