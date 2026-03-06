@@ -28,12 +28,20 @@ export default function AuthPage() {
     setLoading(true);
     try {
       if (mode === 'register') {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: fakeEmail(username),
           password,
           options: { data: { username } },
         });
         if (error) throw error;
+        // 触发器可能失败，前端兜底插入 profile
+        if (data.user) {
+          await supabase.from('profiles').upsert({
+            id: data.user.id,
+            username,
+            display_name: username,
+          });
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: fakeEmail(username),
