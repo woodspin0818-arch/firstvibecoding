@@ -11,6 +11,13 @@ export default function AuthPage() {
 
   const fakeEmail = (u) => `${u.toLowerCase()}@firstvibecoding.app`;
 
+  const handleAnon = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInAnonymously();
+    if (error) setError(error.message);
+    setLoading(false);
+  };
+
   const submit = async (e) => {
     e.preventDefault();
     setError('');
@@ -67,6 +74,10 @@ export default function AuthPage() {
             {loading ? '请稍候…' : mode === 'login' ? '登录' : '注册'}
           </button>
         </form>
+        <div className="auth-divider">或</div>
+        <button className="auth-btn-ghost" onClick={handleAnon} disabled={loading}>
+          👀 先逛逛（匿名进入）
+        </button>
         <div className="auth-switch">
           {mode === 'login'
             ? <>还没有账号？<span onClick={() => { setMode('register'); setError(''); }}>注册</span></>
