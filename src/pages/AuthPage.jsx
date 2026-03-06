@@ -9,7 +9,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const fakeEmail = (u) => `${u.toLowerCase()}@firstvibecoding.app`;
+  const fakeEmail = (u) => `${u.toLowerCase()}@firstvibecoding.com`;
 
   const handleAnon = async () => {
     setLoading(true);
